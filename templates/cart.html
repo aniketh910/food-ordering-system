@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Cart</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<nav>
+    <h2>FoodieExpress</h2>
+    <div>
+        <a href="/">Home</a>
+        <a href="/orders">Orders</a>
+        <a href="/logout">Logout</a>
+    </div>
+</nav>
+
+<h1>Your Cart</h1>
+
+<div class="cart-box">
+    {% for item in cart_items %}
+    <div class="cart-item">
+        <img src="/static/uploads/{{ item.image }}">
+        <div>
+            <h3>{{ item.name }}</h3>
+            <p>₹{{ item.price }}</p>
+        </div>
+        <a class="delete-btn" href="/remove_cart/{{ loop.index0 }}">Remove</a>
+    </div>
+    {% endfor %}
+
+    <h2>Total: ₹{{ total }}</h2>
+
+    <a class="btn" href="/payment">Proceed to Payment</a>
+</div>
+
+</body>
+</html>

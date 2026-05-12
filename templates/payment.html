@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Payment</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<nav>
+    <h2>FoodieExpress</h2>
+    <div>
+        <a href="/">Home</a>
+        <a href="/cart">Cart</a>
+        <a href="/logout">Logout</a>
+    </div>
+</nav>
+
+<div class="form-box">
+
+    <h2>Payment Page</h2>
+
+    <h3>Total Amount: ₹{{ total }}</h3>
+
+    <form method="POST">
+
+        <select name="payment_method" required>
+            <option value="">Select Payment Method</option>
+            <option value="Cash on Delivery">Cash on Delivery</option>
+            <option value="UPI">UPI</option>
+            <option value="Card">Card</option>
+        </select>
+
+        <button type="submit">
+            Confirm Order
+        </button>
+
+    </form>
+
+</div>
+
+</body>
+</html>
