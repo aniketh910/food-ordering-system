@@ -31,17 +31,38 @@
     <h1>Popular Food</h1>
     <div class="food-container">
         {% for food in foods %}
-        <div class="card">
-            <img src="/static/uploads/{{ food.image }}">
-            <div class="card-body">
-                <span class="tag">{{ food.category }}</span>
-                <h3>{{ food.name }}</h3>
-                <p>{{ food.description }}</p>
-                <h4>₹{{ food.price }}</h4>
-                <a class="btn" href="/add_to_cart/{{ food.id }}">Add to Cart</a>
-            </div>
+
+<div class="restaurant-card">
+
+    <div class="image-box">
+        <img src="/static/uploads/{{ food.image }}">
+
+        <div class="offer">
+            ITEMS AT ₹{{ food.price }}
         </div>
-        {% endfor %}
+    </div>
+
+    <h3>{{ food.name }}</h3>
+
+    <p class="rating">
+        ★ 4.5 • 25-30 mins
+    </p>
+
+    <p class="category-text">
+        {{ food.description }}
+    </p>
+
+    <p class="location">
+        {{ food.category }}
+    </p>
+
+    <a class="order-btn" href="/add_to_cart/{{ food.id }}">
+        Add to Cart
+    </a>
+
+</div>
+
+{% endfor %}
     </div>
 </section>
 
@@ -49,17 +70,38 @@
     <h1>Refreshing Drinks</h1>
     <div class="food-container">
         {% for drink in drinks %}
-        <div class="card">
-            <img src="/static/uploads/{{ drink.image }}">
-            <div class="card-body">
-                <span class="tag drink-tag">{{ drink.category }}</span>
-                <h3>{{ drink.name }}</h3>
-                <p>{{ drink.description }}</p>
-                <h4>₹{{ drink.price }}</h4>
-                <a class="btn" href="/add_to_cart/{{ drink.id }}">Add to Cart</a>
-            </div>
+
+<div class="restaurant-card">
+
+    <div class="image-box">
+        <img src="/static/uploads/{{ drink.image }}">
+
+        <div class="offer">
+            ITEMS AT ₹{{ drink.price }}
         </div>
-        {% endfor %}
+    </div>
+
+    <h3>{{ drink.name }}</h3>
+
+    <p class="rating">
+        ★ 4.6 • 20-25 mins
+    </p>
+
+    <p class="category-text">
+        {{ drink.description }}
+    </p>
+
+    <p class="location">
+        {{ drink.category }}
+    </p>
+
+    <a class="order-btn" href="/add_to_cart/{{ drink.id }}">
+        Add to Cart
+    </a>
+
+</div>
+
+{% endfor %}
     </div>
 </section>
 
