@@ -5,12 +5,6 @@ from werkzeug.utils import secure_filename
 import os
 
 app = Flask(__name__)
-@app.after_request
-def security_headers(response):
-    response.headers['X-Content-Type-Options'] = 'nosniff'
-    response.headers['X-Frame-Options'] = 'SAMEORIGIN'
-    response.headers['X-XSS-Protection'] = '1; mode=block'
-    return response
 app.secret_key = "food_ordering_secret_key"
 
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///food_ordering.db"
@@ -18,6 +12,14 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["UPLOAD_FOLDER"] = "static/uploads"
 
 db = SQLAlchemy(app)
+
+
+@app.after_request
+def security_headers(response):
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["X-Frame-Options"] = "SAMEORIGIN"
+    response.headers["X-XSS-Protection"] = "1; mode=block"
+    return response
 
 
 class User(db.Model):
@@ -42,28 +44,14 @@ class Order(db.Model):
     food_name = db.Column(db.String(100), nullable=False)
     price = db.Column(db.Float, nullable=False)
     payment_method = db.Column(db.String(50), default="Cash on Delivery")
-    status = db.Column(db.String(50), default='Preparing')
+    status = db.Column(db.String(50), default="Preparing")
 
 
 @app.route("/")
 def index():
-    search = request.args.get("search", "")
-
-    if search:
-        foods = Food.query.filter(
-            Food.name.contains(search),
-            Food.category == "Food"
-        ).all()
-
-        drinks = Food.query.filter(
-            Food.name.contains(search),
-            Food.category == "Drinks"
-        ).all()
-    else:
-        foods = Food.query.filter_by(category="Food").all()
-        drinks = Food.query.filter_by(category="Drinks").all()
-
-    return render_template("index.html", foods=foods, drinks=drinks, search=search)
+    foods = Food.query.filter_by(category="Food").all()
+    drinks = Food.query.filter_by(category="Drinks").all()
+    return render_template("index.html", foods=foods, drinks=drinks)
 
 
 @app.route("/register", methods=["GET", "POST"])
@@ -72,7 +60,7 @@ def register():
         username = request.form["username"]
         password = generate_password_hash(request.form["password"])
 
-        user = User(username=username, password=password)
+        user = User(username=username, password=password, role="user")
         db.session.add(user)
         db.session.commit()
 
@@ -83,6 +71,8 @@ def register():
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
+    error = None
+
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
@@ -95,11 +85,12 @@ def login():
 
             if user.role == "admin":
                 return redirect("/admin")
+
             return redirect("/")
 
-        return "Invalid username or password"
+        error = "Incorrect username or password"
 
-    return render_template("login.html")
+    return render_template("login.html", error=error)
 
 
 @app.route("/logout")
@@ -114,7 +105,6 @@ def add_to_cart(id):
         return redirect("/login")
 
     cart = session.get("cart", [])
-
     food = Food.query.get_or_404(id)
 
     cart.append({
@@ -125,7 +115,6 @@ def add_to_cart(id):
     })
 
     session["cart"] = cart
-
     return redirect("/cart")
 
 
@@ -171,7 +160,8 @@ def payment():
                 username=session["username"],
                 food_name=item["name"],
                 price=item["price"],
-                payment_method=payment_method
+                payment_method=payment_method,
+                status="Preparing"
             )
             db.session.add(order)
 
@@ -269,7 +259,6 @@ def edit_food(id):
         food.description = request.form["description"]
 
         db.session.commit()
-
         return redirect("/admin")
 
     return render_template("edit_food.html", food=food)
@@ -282,6 +271,18 @@ def delete_food(id):
 
     food = Food.query.get_or_404(id)
     db.session.delete(food)
+    db.session.commit()
+
+    return redirect("/admin")
+
+
+@app.route("/order_ready/<int:id>")
+def order_ready(id):
+    if session.get("role") != "admin":
+        return redirect("/login")
+
+    order = Order.query.get_or_404(id)
+    order.status = "Ready for Delivery"
     db.session.commit()
 
     return redirect("/admin")
@@ -301,19 +302,6 @@ with app.app_context():
         db.session.add(admin)
         db.session.commit()
 
-        @app.route('/order_ready/<int:id>')
-def order_ready(id):
-    if session.get('role') != 'admin':
-        return redirect('/login')
-
-    order = Order.query.get(id)
-
-    if order:
-        order.status = 'Ready for Delivery'
-        db.session.commit()
-
-    return redirect('/admin')
-
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=5000, debug=True)
