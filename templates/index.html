@@ -13,7 +13,7 @@
         <a href="#food">Food</a>
         <a href="#drinks">Drinks</a>
         <a href="/cart">Cart</a>
-<a href="/orders">Orders</a>
+        <a href="/orders">Orders</a>
         <a href="/login">Login</a>
         <a href="/register">Register</a>
     </div>
@@ -27,83 +27,72 @@
     </div>
 </section>
 
-<section id="food">
-    <h1>Popular Food</h1>
-    <div class="food-container">
-        {% for food in foods %}
-
-<div class="restaurant-card">
-
-    <div class="image-box">
-        <img src="/static/uploads/{{ food.image }}">
-
-        <div class="offer">
-            ITEMS AT ₹{{ food.price }}
-        </div>
-    </div>
-
-    <h3>{{ food.name }}</h3>
-
-    <p class="rating">
-        ★ 4.5 • 25-30 mins
-    </p>
-
-    <p class="category-text">
-        {{ food.description }}
-    </p>
-
-    <p class="location">
-        {{ food.category }}
-    </p>
-
-    <a class="order-btn" href="/add_to_cart/{{ food.id }}">
-        Add to Cart
-    </a>
-
+<div class="search-box">
+    <input type="text" id="searchInput" placeholder="Search food items...">
 </div>
 
-{% endfor %}
+<section id="food">
+    <h1>Popular Food</h1>
+
+    <div class="food-container">
+        {% for food in foods %}
+        <div class="restaurant-card">
+            <div class="image-box">
+                <img src="/static/uploads/{{ food.image }}">
+                <div class="offer">ITEMS AT ₹{{ food.price }}</div>
+            </div>
+
+            <h3>{{ food.name }}</h3>
+            <p class="rating">★ 4.5 • 25-30 mins</p>
+            <p class="category-text">{{ food.description }}</p>
+            <p class="location">{{ food.category }}</p>
+
+            <a class="order-btn" href="/add_to_cart/{{ food.id }}">Add to Cart</a>
+        </div>
+        {% endfor %}
     </div>
 </section>
 
 <section id="drinks">
     <h1>Refreshing Drinks</h1>
+
     <div class="food-container">
         {% for drink in drinks %}
+        <div class="restaurant-card">
+            <div class="image-box">
+                <img src="/static/uploads/{{ drink.image }}">
+                <div class="offer">ITEMS AT ₹{{ drink.price }}</div>
+            </div>
 
-<div class="restaurant-card">
+            <h3>{{ drink.name }}</h3>
+            <p class="rating">★ 4.6 • 20-25 mins</p>
+            <p class="category-text">{{ drink.description }}</p>
+            <p class="location">{{ drink.category }}</p>
 
-    <div class="image-box">
-        <img src="/static/uploads/{{ drink.image }}">
-
-        <div class="offer">
-            ITEMS AT ₹{{ drink.price }}
+            <a class="order-btn" href="/add_to_cart/{{ drink.id }}">Add to Cart</a>
         </div>
-    </div>
-
-    <h3>{{ drink.name }}</h3>
-
-    <p class="rating">
-        ★ 4.6 • 20-25 mins
-    </p>
-
-    <p class="category-text">
-        {{ drink.description }}
-    </p>
-
-    <p class="location">
-        {{ drink.category }}
-    </p>
-
-    <a class="order-btn" href="/add_to_cart/{{ drink.id }}">
-        Add to Cart
-    </a>
-
-</div>
-
-{% endfor %}
+        {% endfor %}
     </div>
 </section>
+
+<script>
+const searchInput = document.getElementById('searchInput');
+
+searchInput.addEventListener('keyup', function () {
+    const filter = searchInput.value.toLowerCase();
+    const cards = document.querySelectorAll('.restaurant-card');
+
+    cards.forEach(card => {
+        const text = card.innerText.toLowerCase();
+
+        if (text.includes(filter)) {
+            card.style.display = 'block';
+        } else {
+            card.style.display = 'none';
+        }
+    });
+});
+</script>
 
 </body>
 </html>

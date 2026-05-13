@@ -5,6 +5,12 @@ from werkzeug.utils import secure_filename
 import os
 
 app = Flask(__name__)
+@app.after_request
+def security_headers(response):
+    response.headers['X-Content-Type-Options'] = 'nosniff'
+    response.headers['X-Frame-Options'] = 'SAMEORIGIN'
+    response.headers['X-XSS-Protection'] = '1; mode=block'
+    return response
 app.secret_key = "food_ordering_secret_key"
 
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///food_ordering.db"
