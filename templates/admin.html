@@ -44,23 +44,35 @@
 
     </div>
 
-    <h1>Users</h1>
+    
 
-    <table>
-        <tr>
-            <th>ID</th>
-            <th>Username</th>
-            <th>Role</th>
-        </tr>
+    <h1>Orders</h1>
 
-        {% for user in users %}
-        <tr>
-            <td>{{ user.id }}</td>
-            <td>{{ user.username }}</td>
-            <td>{{ user.role }}</td>
-        </tr>
-        {% endfor %}
-    </table>
+<table>
+    <tr>
+        <th>Order ID</th>
+        <th>User</th>
+        <th>Food Item</th>
+        <th>Price</th>
+        <th>Status</th>
+        <th>Action</th>
+    </tr>
+
+    {% for order in orders %}
+    <tr>
+        <td>{{ order.id }}</td>
+        <td>{{ order.username }}</td>
+        <td>{{ order.food_name }}</td>
+        <td>₹{{ order.price }}</td>
+        <td>{{ order.status }}</td>
+        <td>
+            <a href="/order_ready/{{ order.id }}" class="ready-btn">
+                Order Ready
+            </a>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
 
 </body>
 </html>

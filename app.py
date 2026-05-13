@@ -42,6 +42,7 @@ class Order(db.Model):
     food_name = db.Column(db.String(100), nullable=False)
     price = db.Column(db.Float, nullable=False)
     payment_method = db.Column(db.String(50), default="Cash on Delivery")
+    status = db.Column(db.String(50), default='Preparing')
 
 
 @app.route("/")
@@ -299,6 +300,19 @@ with app.app_context():
         )
         db.session.add(admin)
         db.session.commit()
+
+        @app.route('/order_ready/<int:id>')
+def order_ready(id):
+    if session.get('role') != 'admin':
+        return redirect('/login')
+
+    order = Order.query.get(id)
+
+    if order:
+        order.status = 'Ready for Delivery'
+        db.session.commit()
+
+    return redirect('/admin')
 
 
 if __name__ == "__main__":
