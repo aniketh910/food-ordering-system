@@ -6,47 +6,59 @@
 </head>
 <body>
 
-    <nav>
-        <h2>Admin Dashboard</h2>
-        <div>
-            <a href="/">Home</a>
-            <a href="/add_food">Add Food</a>
-            <a href="/orders">Orders</a>
-            <a href="/logout">Logout</a>
-        </div>
-    </nav>
+<nav>
+    <h2>Admin Dashboard</h2>
+    <div>
+        <a href="/">Home</a>
+        <a href="/add_food">Add Food</a>
+        <a href="/orders">Orders</a>
+        <a href="/logout">Logout</a>
+    </div>
+</nav>
 
-    <h1>Manage Food Items</h1>
-
-    <div class="food-container">
-
-        {% for food in foods %}
-        <div class="card">
-
-            {% if food.image %}
-            <img src="/static/uploads/{{ food.image }}">
-            {% endif %}
-
-            <h3>{{ food.name }}</h3>
-
-            <p>{{ food.description }}</p>
-
-            <h4>₹{{ food.price }}</h4>
-
-            <a class="btn" href="/edit_food/{{ food.id }}">Edit</a>
-
-            <a class="delete-btn" href="/delete_food/{{ food.id }}">
-                Delete
-            </a>
-
-        </div>
-        {% endfor %}
-
+<div class="stats-container">
+    <div class="stat-card">
+        <h3>Total Users</h3>
+        <p>{{ total_users }}</p>
     </div>
 
-    
+    <div class="stat-card">
+        <h3>Total Items</h3>
+        <p>{{ total_items }}</p>
+    </div>
 
-    <h1>Orders</h1>
+    <div class="stat-card">
+        <h3>Total Orders</h3>
+        <p>{{ total_orders }}</p>
+    </div>
+
+    <div class="stat-card">
+        <h3>Total Revenue</h3>
+        <p>₹{{ total_revenue }}</p>
+    </div>
+</div>
+
+<h1>Manage Food Items</h1>
+
+<div class="food-container">
+    {% for food in foods %}
+    <div class="restaurant-card">
+        <div class="image-box">
+            <img src="/static/uploads/{{ food.image }}">
+            <div class="offer">₹{{ food.price }}</div>
+        </div>
+
+        <h3>{{ food.name }}</h3>
+        <p class="category-text">{{ food.description }}</p>
+        <p class="location">{{ food.category }}</p>
+
+        <a class="order-btn" href="/edit_food/{{ food.id }}">Edit</a>
+        <a class="delete-btn" href="/delete_food/{{ food.id }}">Delete</a>
+    </div>
+    {% endfor %}
+</div>
+
+<h1>Orders</h1>
 
 <table>
     <tr>
@@ -54,6 +66,7 @@
         <th>User</th>
         <th>Food Item</th>
         <th>Price</th>
+        <th>Payment</th>
         <th>Status</th>
         <th>Action</th>
     </tr>
@@ -64,12 +77,31 @@
         <td>{{ order.username }}</td>
         <td>{{ order.food_name }}</td>
         <td>₹{{ order.price }}</td>
+        <td>{{ order.payment_method }}</td>
         <td>{{ order.status }}</td>
         <td>
             <a href="/order_ready/{{ order.id }}" class="ready-btn">
                 Order Ready
             </a>
         </td>
+    </tr>
+    {% endfor %}
+</table>
+
+<h1>Users</h1>
+
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Username</th>
+        <th>Role</th>
+    </tr>
+
+    {% for user in users %}
+    <tr>
+        <td>{{ user.id }}</td>
+        <td>{{ user.username }}</td>
+        <td>{{ user.role }}</td>
     </tr>
     {% endfor %}
 </table>

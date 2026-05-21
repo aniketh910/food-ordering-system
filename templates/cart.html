@@ -17,21 +17,26 @@
 
 <h1>Your Cart</h1>
 
-<div class="cart-box">
+<div class="cart-container">
     {% for item in cart_items %}
-    <div class="cart-item">
+    <div class="cart-card">
         <img src="/static/uploads/{{ item.image }}">
-        <div>
-            <h3>{{ item.name }}</h3>
-            <p>₹{{ item.price }}</p>
-        </div>
-        <a class="delete-btn" href="/remove_cart/{{ loop.index0 }}">Remove</a>
+        <h3>{{ item.name }}</h3>
+        <p>₹{{ item.price }}</p>
+        <a href="/remove_cart/{{ loop.index0 }}" class="remove-btn">Remove</a>
     </div>
     {% endfor %}
+</div>
 
+<div class="cart-total-box">
     <h2>Total: ₹{{ total }}</h2>
 
-    <a class="btn" href="/payment">Proceed to Payment</a>
+    {% if cart_items %}
+    <a href="/payment" class="pay-btn">Proceed To Payment</a>
+    {% else %}
+    <p>Your cart is empty.</p>
+    <a href="/" class="pay-btn">Continue Shopping</a>
+    {% endif %}
 </div>
 
 </body>

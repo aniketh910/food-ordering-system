@@ -51,7 +51,8 @@ class Order(db.Model):
 def index():
     foods = Food.query.filter_by(category="Food").all()
     drinks = Food.query.filter_by(category="Drinks").all()
-    return render_template("index.html", foods=foods, drinks=drinks)
+    cart_count = len(session.get("cart", []))
+    return render_template("index.html", foods=foods, drinks=drinks, cart_count=cart_count)
 
 
 @app.route("/register", methods=["GET", "POST"])
@@ -63,7 +64,6 @@ def register():
         user = User(username=username, password=password, role="user")
         db.session.add(user)
         db.session.commit()
-
         return redirect("/login")
 
     return render_template("register.html")
@@ -85,7 +85,6 @@ def login():
 
             if user.role == "admin":
                 return redirect("/admin")
-
             return redirect("/")
 
         error = "Incorrect username or password"
@@ -104,9 +103,9 @@ def add_to_cart(id):
     if "username" not in session:
         return redirect("/login")
 
-    cart = session.get("cart", [])
     food = Food.query.get_or_404(id)
 
+    cart = session.get("cart", [])
     cart.append({
         "id": food.id,
         "name": food.name,
@@ -167,7 +166,6 @@ def payment():
 
         db.session.commit()
         session["cart"] = []
-
         return redirect("/orders")
 
     return render_template("payment.html", cart_items=cart_items, total=total)
@@ -282,7 +280,7 @@ def order_ready(id):
         return redirect("/login")
 
     order = Order.query.get_or_404(id)
-    order.status = "Ready for Delivery"
+    db.session.delete(order)
     db.session.commit()
 
     return redirect("/admin")

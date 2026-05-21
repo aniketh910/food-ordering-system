@@ -75,6 +75,13 @@
     </div>
 </section>
 
+{% if cart_count > 0 %}
+<div class="floating-cart-bar">
+    <span>🛒 {{ cart_count }} item(s) added to cart</span>
+    <a href="/cart">Go to Cart</a>
+</div>
+{% endif %}
+
 <script>
 const searchInput = document.getElementById('searchInput');
 
